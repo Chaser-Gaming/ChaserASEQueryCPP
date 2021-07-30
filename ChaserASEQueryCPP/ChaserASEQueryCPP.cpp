@@ -9,7 +9,7 @@
 
 using namespace std;
 
-void SendUDP(string ip, int port);
+void sendUDP(string ip, int port);
 void reggy(string message);
 void splitnprint(string message);
 
@@ -38,7 +38,7 @@ int main(void){
         cout << "# Enter server Port: ", cin >> port;
         cout << "#" << string(96, ' ') + "#\n";
 
-        SendUDP(ip, port + 123);
+        sendUDP(ip, port + 123);
 
         cout << "# Push 'q' to exit, or any key to continue. " << string(53, ' ') + "#\n";;
         cin >> quit;
@@ -49,19 +49,18 @@ int main(void){
     return 0;
 }
 
-void SendUDP(string ip, int port) {
-
+void sendUDP(string ip, int port) {
     WSASession Session;
     UDPSocket Socket;
     char recvbuffer[250];
-    std::string data = "s";
+    string message = "s";
 
     try
     {
-        Socket.SendTo(ip, port, data.c_str(), data.size());
+        Socket.SendTo(ip, port, message.c_str(), message.size());
 
         sockaddr_in add = Socket.RecvFrom(recvbuffer, sizeof(recvbuffer));
-        std::string input(recvbuffer);
+        string input(recvbuffer);
         cout << "############################## QUERY RESULTS FOR " << ip << ":" << port - 123 << " ##############################\n";
         cout << "#" << string(96, ' ') + "#\n";
         reggy(input);
@@ -69,29 +68,27 @@ void SendUDP(string ip, int port) {
     }
     catch (std::system_error& e)
     {
-        std::cout << e.what();
+        cout << e.what();
     }
 }
 
 void reggy(string message) {
-    std::regex e("[^\\w\\.@*&^%$#!()= -]");
+    regex e("[^\\w\\.@*&^%$#!()= -]");
 
-    std::string reggy = regex_replace(message, e, "\\");
+    string reggy = regex_replace(message, e, "\\");
 
     splitnprint(reggy);
 }
 
 void splitnprint(string message) {
-    std::string delimiter = "\\";
+    string delimiter = "\\";
     string fullmessage = message;
     int i = 0;
     string keys[50];
     size_t pos = 0;
-    std::string key;
 
-        while ((pos = message.find(delimiter)) != std::string::npos) {
-            key = message.substr(0, pos);
-            keys[i] = key;
+        while ((pos = message.find(delimiter)) != string::npos) {
+            keys[i] = message.substr(0, pos);
             message.erase(0, pos + delimiter.length());
             ++i;
         }
